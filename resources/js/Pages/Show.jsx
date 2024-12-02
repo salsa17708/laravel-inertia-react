@@ -1,5 +1,5 @@
-import { useForm } from "@inertiajs/react";
-import { useRoute } from "../../../vendor/tightenco/ziggy"
+import { Link, useForm } from "@inertiajs/react";
+import { useRoute } from "../../../vendor/tightenco/ziggy";
 
 export default function show({ post }) {
     const { delete: destroy } = useForm();
@@ -8,7 +8,7 @@ export default function show({ post }) {
     function submit(e) {
         e.preventDefault();
        // destroy(`/posts/${post.id}`);
-        destroy(route('posts.destroy', post));
+        destroy(route("posts.destroy", post));
     }
   
     return (
@@ -20,7 +20,7 @@ export default function show({ post }) {
                                 {new Date(post.created_at).toLocaleString()}
                             </span>
                         </div>
-                        <p className="post-body font-medium">{post.body}</p>
+                        <p className="font-medium">{post.body}</p>
 
                         <div className="flex items-center justify-end gap-2">
                             <form onSubmit={submit}>
@@ -28,6 +28,9 @@ export default function show({ post }) {
                                     Delete
                                     </button>
                             </form>
+                       {/*  <Link href={`/posts/${post.id}/edit`} className="bg-green-500 rounded-md text-sm px-4 py-1 text-white">Update</Link> */}
+
+                          <Link href={route('posts.edit', post)} className="bg-green-500 rounded-md text-sm px-4 py-1 text-white">Update</Link>
                         </div>
                     </div>
         </>
