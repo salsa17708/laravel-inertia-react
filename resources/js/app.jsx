@@ -1,26 +1,28 @@
-import './bootstrap';
 import '../css/app.css';
+import './bootstrap';
 
-import { createInertiaApp } from '@inertiajs/react'
-import { createRoot } from 'react-dom/client'
-import Layout from '@/layouts/Layout';
+import { createInertiaApp } from '@inertiajs/react';
+import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
+import { createRoot, hydrateRoot } from 'react-dom/client';
+
+const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 createInertiaApp({
-  title: title =>
-     title ? `${title} - laravel inertia react` : "laravel inertia react",
-  resolve: name => {
-    const pages = import.meta.glob('./Pages/**/*.jsx', { eager: true });
-    const page = pages[`./Pages/${name}.jsx`];
-    if (page) {
-      page.default.layout = page.default.layout || ((page) => <Layout children={page}/>);
-    }
-    return page;
-  }, 
-  setup({ el, App, props }) {
-    createRoot(el).render(<App {...props} />);
-  },
-  progress: {
-    color: '#fff',
-    showSpinner: true
-  }
+    title: (title) => `${title} - ${appName}`,
+    resolve: (name) =>
+        resolvePageComponent(
+            `./Pages/${name}.jsx`,
+            import.meta.glob('./Pages/**/*.jsx'),
+        ),
+    setup({ el, App, props }) {
+        if (import.meta.env.SSR) {
+            hydrateRoot(el, <App {...props} />);
+            return;
+        }
+
+        createRoot(el).render(<App {...props} />);
+    },
+    progress: {
+        color: '#4B5563',
+    },
 });
